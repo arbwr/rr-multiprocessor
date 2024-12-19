@@ -7,7 +7,7 @@ export class Processor {
         this.ganttChart = [];
     }
 
-    addGanttChartItem(startTime, endTime) {
-        this.ganttChart.push(new GanttChartItem(startTime, endTime));
+    addGanttChartItem(processId, startTime, endTime) {
+        this.ganttChart.push(new GanttChartItem(processId, startTime, endTime));
     }
 }

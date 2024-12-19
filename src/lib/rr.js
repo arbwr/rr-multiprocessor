@@ -62,7 +62,7 @@ export const roundRobinScheduler = (processes, numProcessors, quantum) => {
                 console.log(`P${process.id} is executed for ${executeTime} units at time. Next arrival: ${process.nextArrival}. Remaining time: ${process.remainingTime}`);
 
                 /* Add to Gantt Chart Item */
-                // processors[i].addGanttChartItem(currentTime, currentTime + executeTime);
+                processors[i].addGanttChartItem(process.id, currentTime, process.nextArrival);
 
                 /* Do the calculation if the process is finished */
                 if (process.remainingTime == 0) {
@@ -81,8 +81,8 @@ export const roundRobinScheduler = (processes, numProcessors, quantum) => {
         currentTime++;
     }
 
-    console.log("ksdjslkd");
-    console.log(processes);
-
-    return processes;
+    return { 
+        algorithmResponse: processes, 
+        ganttChartProcessors: processors 
+    };
 }

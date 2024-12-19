@@ -6,9 +6,11 @@ import { useState } from "react";
 /* Components */
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import GanttChart from "@/components/charts/GanttChart";
 import { ProcessTable } from "@/components/table/ProcessTable";
 import { ProcessInput } from "@/components/inputs/ProcessInput";
 import MaxWidthWrapper from "@/components/wrappers/MaxWidthWrapper";
+import { ScheduledProcessTable } from "@/components/table/ScheduledProcessTable";
 
 /* Models */
 import { Process } from "@/models/Process";
@@ -16,8 +18,6 @@ import { Process } from "@/models/Process";
 /* Libs */
 import { roundRobinScheduler } from "@/lib/rr";
 import { calculateATT, calculateAWT } from "@/lib/utils";
-import { ScheduledProcessTable } from "@/components/table/ScheduledProcessTable";
-
 
 export default function Scheduler() {
 
@@ -28,17 +28,33 @@ export default function Scheduler() {
   const [processes, setProcesses] = useState([]);
   const [scheduledProcesses, setScheduledProcesses] = useState([]);
 
+  /* Gant Chart */
+  const [processors, setProcessors] = useState([]);
+
   const addProcess = (process) => {
     setProcesses([...processes, new Process(process.id, process.arrivalTime, process.burstTime)]);
   }
 
   const schedule = () => {
-    const algorithmResponse = roundRobinScheduler(processes, numberOfProcessors, timeQuantum);
+    setScheduledProcesses([]);
+    setProcessors([]);
+
+    /* Reset processes to inital state  */
+    const resetProcesses = processes.map((process) => ({
+      ...process,
+      remainingTime: process.burstTime,
+      nextArrival: process.arrivalTime,
+    }));
+
+    setProcesses(resetProcesses);
+
+    const { algorithmResponse, ganttChartProcessors } = roundRobinScheduler(resetProcesses, numberOfProcessors, timeQuantum);
     setScheduledProcesses(algorithmResponse);
+    setProcessors(ganttChartProcessors);
   }
 
   return (
-    <div className="bg-slate-200 flex flex-col w-full">
+    <div className="bg-slate-200 flex flex-col w-full min-h-dvh">
       <MaxWidthWrapper className="flex overflow-x-hidden">
         <section id="scheduler" className="w-full flex justify-center mt-5">
           <div className="md:w-4/6 w-full px-3">
@@ -113,6 +129,9 @@ export default function Scheduler() {
                 <p className="mb-10">
                   Average turnaroundTime time: <span className="font-semibold">{calculateATT(scheduledProcesses)} ms</span>
                 </p>
+              
+                <p className="mb-1">Gantt Chart</p>
+                <GanttChart processors={processors} />
               </div>
             )}
 
