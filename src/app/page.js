@@ -127,7 +127,7 @@ export default function Scheduler() {
                   Average waiting time: <span className="font-semibold">{calculateAWT(scheduledProcesses)} ms</span>
                 </p>
                 <p className="mb-10">
-                  Average turnaroundTime time: <span className="font-semibold">{calculateATT(scheduledProcesses)} ms</span>
+                  Average turnaround time: <span className="font-semibold">{calculateATT(scheduledProcesses)} ms</span>
                 </p>
               
                 <p className="mb-1">Gantt Chart</p>
